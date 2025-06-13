@@ -1,0 +1,9 @@
+TreeMap<Integer, Integer> map = new TreeMap<>();
+map.put(1, 5);
+map.put(10, 20);
+map.put(30, 40);
+
+System.out.println(map.ceilingKey(6));   // Output: 10 (first ≥ 6)
+System.out.println(map.ceilingKey(10));  // Output: 10 (exact match)
+System.out.println(map.ceilingKey(21));  // Output: 30
+System.out.println(map.ceilingKey(100)); // Output: null (no key ≥ 100)
