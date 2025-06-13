@@ -1,9 +1,69 @@
-TreeMap<Integer, Integer> map = new TreeMap<>();
-map.put(1, 5);
-map.put(10, 20);
-map.put(30, 40);
+public class IntervalManager {
+    private final TreeMap<Integer, Integer> intervals;
 
-System.out.println(map.ceilingKey(6));   // Output: 10 (first ≥ 6)
-System.out.println(map.ceilingKey(10));  // Output: 10 (exact match)
-System.out.println(map.ceilingKey(21));  // Output: 30
-System.out.println(map.ceilingKey(100)); // Output: null (no key ≥ 100)
+    public IntervalManager() {
+        intervals = new TreeMap<>();
+    }
+
+    // Adds and merges the interval [start, end]
+    //might work i'm not sure
+    public void addInterval(int start, int end) {
+        if (start > end) return;
+
+        // Find the interval just before or at 'start'
+        //Treemap will store intervals in form of start and end
+        //it has methods 
+        //The floorKey() method returns the greatest key less than or equal to the given key.
+        Integer low = intervals.floorKey(start);
+        if (low != null && intervals.get(low) >= start - 1) {
+            // Merge with overlapping previous
+            start = Math.min(start, low);
+            end = Math.max(end, intervals.get(low));
+            intervals.remove(low);
+        }
+
+        // Merge with all following overlapping intervals
+        //The method ceilingKey(key) returns the smallest key that is greater than or equal to the given key.
+        Integer high = intervals.ceilingKey(start);
+        while (high != null && high <= end + 1) {
+            end = Math.max(end, intervals.get(high));
+            intervals.remove(high);
+            high = intervals.ceilingKey(start);
+        }
+
+        // Add merged interval
+        intervals.put(start, end);
+    }
+
+    public boolean query(int val) {
+        Integer key = intervals.floorKey(val);
+        return key != null && intervals.get(key) >= val;
+    }
+
+    public void removeInterval(int start, int end) {
+        if (start > end) return;
+
+        Integer key = intervals.floorKey(start);
+        if (key != null && intervals.get(key) >= start) {
+            int existingStart = key;
+            int existingEnd = intervals.get(key);
+            intervals.remove(existingStart);
+
+            if (existingStart < start) {
+                intervals.put(existingStart, start - 1);
+            }
+            if (existingEnd > end) {
+                intervals.put(end + 1, existingEnd);
+            }
+        }
+
+        // Remove all full overlaps inside (start, end)
+        Integer next = intervals.ceilingKey(start);
+        while (next != null && next <= end) {
+            int currEnd = intervals.get(next);
+            intervals.remove(next);
+            if (currEnd > end) {
+                intervals.put(end + 1, currEnd);
+                break;
+            }
+            next = intervals.ceil
