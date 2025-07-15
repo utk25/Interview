@@ -13,7 +13,8 @@ public class StockSpanSolver {
         int[] span = new int[n]; 
         // stores indices of input array    
         Stack<Integer> stack = new Stack<>(); 
-
+        //we will insert each index in stack and pop out only if current incoming index value is 
+        // more than top of stack
         for (int i = 0; i < n; i++) {
             // Pop while current price >= price at index on top of the stack
             while (!stack.isEmpty() && prices[stack.peek()] <= prices[i]) {
