@@ -22,9 +22,11 @@ public class StockSpanSolver {
             }
 
             if (stack.isEmpty()) {
+                // here nothing is present in stack, so span is current i only
                 // No greater price on the left side
                 span[i] = i + 1;  
             } else {
+                //otherwise we check the distance between current index and last peek present in stack
                 // Distance to last greater price present previously
                 span[i] = i - stack.peek();  
             }
