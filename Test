@@ -1,59 +1,47 @@
 import java.util.*;
 
-public class MaxInterviews {
+public class InterviewScheduler {
 
-    static class Candidate {
-        int start, end;
-        Candidate(int start, int end) {
-            this.start = start;
-            this.end = end;
-        }
-    }
+    public int schedule(int[][] candidates) {
+        // Step 1: Sort candidates by their end day (greedy strategy)
+        Arrays.sort(candidates, Comparator.comparingInt(a -> a[1]));
 
-    public static int maxInterviews(List<Candidate> candidates) {
-        // Sort candidates by end day (greedy choice)
-        candidates.sort((a, b) -> Integer.compare(a.end, b.end));
-
-        // Find max end day to build available day list
+        // Step 2: Find the maximum end day
         int maxDay = 0;
-        int minDay = 0;
-        for (Candidate c : candidates) {
-            minDay = Math.min(minDay, c.start)
-            maxDay = Math.max(maxDay, c.end);
+        for (int[] c : candidates) {
+            maxDay = Math.max(maxDay, c[1]);
         }
 
-        // TreeSet of all available days
+        // Step 3: Create a TreeSet of available days (1 to maxDay)
         TreeSet<Integer> days = new TreeSet<>();
-        for (int i = minDay; i <= maxDay; i++) {
+        for (int i = 1; i <= maxDay; i++) {
             days.add(i);
         }
 
         int interviews = 0;
-        for (Candidate c : candidates) {
-            Integer day = days.ceiling(c.start);
-            if (day != null && day <= c.end) {
+
+        // Step 4: Try to assign each candidate to the earliest available day in their range
+        for (int[] c : candidates) {
+            int start = c[0];
+            int end = c[1];
+
+            Integer availableDay = days.ceiling(start); // find first available day >= start
+
+            if (availableDay != null && availableDay <= end) {
                 interviews++;
-                days.remove(day);
+                days.remove(availableDay); // Mark the day as used
             }
         }
 
         return interviews;
     }
 
+    // Optional: test from main
     public static void main(String[] args) {
-        // Test Case 1
-        List<Candidate> test1 = Arrays.asList(
-            new Candidate(1, 2),
-            new Candidate(1, 2)
-        );
-        System.out.println("Test 1 (Expected 2): " + maxInterviews(test1));
+        InterviewScheduler scheduler = new InterviewScheduler();
 
-        // Test Case 2
-        List<Candidate> test2 = Arrays.asList(
-            new Candidate(1, 2),
-            new Candidate(2, 3),
-            new Candidate(3, 4)
-        );
-        System.out.println("Test 2 (Expected 3): " + maxInterviews(test2));
-    }
-}
+        int[][] test1 = {{1, 2}, {1, 2}};
+        System.out.println("Expected 2: " + scheduler.schedule(test1));
+
+        int[][] test2 = {{1, 2}, {2, 3}, {3, 4}};
+        System.out.println("Expected 3: " + scheduler.schedu
