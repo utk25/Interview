@@ -16,13 +16,15 @@ public class MaxInterviews {
 
         // Find max end day to build available day list
         int maxDay = 0;
+        int minDay = 0;
         for (Candidate c : candidates) {
+            minDay = Math.min(minDay, c.start)
             maxDay = Math.max(maxDay, c.end);
         }
 
         // TreeSet of all available days
         TreeSet<Integer> days = new TreeSet<>();
-        for (int i = 1; i <= maxDay; i++) {
+        for (int i = minDay; i <= maxDay; i++) {
             days.add(i);
         }
 
