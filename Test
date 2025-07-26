@@ -1,1 +1,57 @@
+import java.util.*;
 
+public class MaxInterviews {
+
+    static class Candidate {
+        int start, end;
+        Candidate(int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
+    }
+
+    public static int maxInterviews(List<Candidate> candidates) {
+        // Sort candidates by end day (greedy choice)
+        candidates.sort((a, b) -> Integer.compare(a.end, b.end));
+
+        // Find max end day to build available day list
+        int maxDay = 0;
+        for (Candidate c : candidates) {
+            maxDay = Math.max(maxDay, c.end);
+        }
+
+        // TreeSet of all available days
+        TreeSet<Integer> days = new TreeSet<>();
+        for (int i = 1; i <= maxDay; i++) {
+            days.add(i);
+        }
+
+        int interviews = 0;
+        for (Candidate c : candidates) {
+            Integer day = days.ceiling(c.start);
+            if (day != null && day <= c.end) {
+                interviews++;
+                days.remove(day);
+            }
+        }
+
+        return interviews;
+    }
+
+    public static void main(String[] args) {
+        // Test Case 1
+        List<Candidate> test1 = Arrays.asList(
+            new Candidate(1, 2),
+            new Candidate(1, 2)
+        );
+        System.out.println("Test 1 (Expected 2): " + maxInterviews(test1));
+
+        // Test Case 2
+        List<Candidate> test2 = Arrays.asList(
+            new Candidate(1, 2),
+            new Candidate(2, 3),
+            new Candidate(3, 4)
+        );
+        System.out.println("Test 2 (Expected 3): " + maxInterviews(test2));
+    }
+}
