@@ -37,3 +37,27 @@ dp[i][j] = Σ dp[i-1][j-k], for k = 1..m (if j-k >= 0)
 Answer = dp[n][s].
 
 Complexity: O(n * s * m), which is good enough for basic optimal solution.
+
+
+
+public class DiceSumWaysRecursive {
+
+    public static int countWays(int n, int m, int s) {
+        // Base cases
+        if (n == 0 && s == 0) return 1;   // exactly formed sum with no dice
+        if (n == 0 || s < 0) return 0;    // no dice left or invalid sum
+
+        int ways = 0;
+        // Try every face on the current die
+        for (int face = 1; face <= m; face++) {
+            ways += countWays(n - 1, m, s - face);
+        }
+        return ways;
+    }
+
+    public static void main(String[] args) {
+        int n = 2, m = 6, s = 4;
+        System.out.println(countWays(n, m, s)); // Output: 3
+    }
+}
+
