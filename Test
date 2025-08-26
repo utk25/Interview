@@ -7,6 +7,8 @@ public class DiceSumWays {
         for (int dice = 1; dice <= n; dice++) {
             for (int sum = 1; sum <= s; sum++) {
                 dp[dice][sum] = 0;
+                //Try all face values the current die can show: 1..m, 
+                // but never more than sum (to avoid negative indices).
                 for (int face = 1; face <= m && face <= sum; face++) {
                     dp[dice][sum] += dp[dice - 1][sum - face];
                 }
