@@ -1,57 +1,29 @@
-public class DiceSumWays {
+import java.util.Arrays;
+
+public class DiceSumWaysMemo {
+
     public static int countWays(int n, int m, int s) {
         int[][] dp = new int[n + 1][s + 1];
-        
-        dp[0][0] = 1; // base case
-        
-        for (int dice = 1; dice <= n; dice++) {
-            for (int sum = 1; sum <= s; sum++) {
-                dp[dice][sum] = 0;
-                //Try all face values the current die can show: 1..m, 
-                // but never more than sum (to avoid negative indices).
-                for (int face = 1; face <= m && face <= sum; face++) {
-                    dp[dice][sum] += dp[dice - 1][sum - face];        
-                }
-            }
+        for (int[] row : dp) {
+            Arrays.fill(row, -1); // -1 means "not computed yet"
         }
-        
-        return dp[n][s];
+        return solve(n, m, s, dp);
     }
 
-    public static void main(String[] args) {
-        int n = 2, m = 6, s = 4;
-        System.out.println(countWays(n, m, s)); // Output: 3
-    }
-}
-
-
-Let dp[i][j] = number of ways to get sum j using i dice.
-
-Base case: dp[0][0] = 1 (one way to make sum 0 with 0 dice).
-
-Transition:
-
-dp[i][j] = Σ dp[i-1][j-k], for k = 1..m (if j-k >= 0)
-
-
-Answer = dp[n][s].
-
-Complexity: O(n * s * m), which is good enough for basic optimal solution.
-
-
-
-public class DiceSumWaysRecursive {
-
-    public static int countWays(int n, int m, int s) {
+    private static int solve(int n, int m, int s, int[][] dp) {
         // Base cases
-        if (n == 0 && s == 0) return 1;   // exactly formed sum with no dice
-        if (n == 0 || s < 0) return 0;    // no dice left or invalid sum
+        if (n == 0 && s == 0) return 1;  // exactly formed sum
+        if (n == 0 || s < 0) return 0;   // invalid case
+
+        // Already computed?
+        if (dp[n][s] != -1) return dp[n][s];
 
         int ways = 0;
-        // Try every face on the current die
         for (int face = 1; face <= m; face++) {
-            ways += countWays(n - 1, m, s - face);
+            ways += solve(n - 1, m, s - face, dp);
         }
+
+        dp[n][s] = ways; // store result
         return ways;
     }
 
@@ -60,4 +32,3 @@ public class DiceSumWaysRecursive {
         System.out.println(countWays(n, m, s)); // Output: 3
     }
 }
-
