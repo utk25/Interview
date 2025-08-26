@@ -1,1 +1,37 @@
+public class DiceSumWays {
+    public static int countWays(int n, int m, int s) {
+        int[][] dp = new int[n + 1][s + 1];
+        
+        dp[0][0] = 1; // base case
+        
+        for (int dice = 1; dice <= n; dice++) {
+            for (int sum = 1; sum <= s; sum++) {
+                dp[dice][sum] = 0;
+                for (int face = 1; face <= m && face <= sum; face++) {
+                    dp[dice][sum] += dp[dice - 1][sum - face];
+                }
+            }
+        }
+        
+        return dp[n][s];
+    }
 
+    public static void main(String[] args) {
+        int n = 2, m = 6, s = 4;
+        System.out.println(countWays(n, m, s)); // Output: 3
+    }
+}
+
+
+Let dp[i][j] = number of ways to get sum j using i dice.
+
+Base case: dp[0][0] = 1 (one way to make sum 0 with 0 dice).
+
+Transition:
+
+dp[i][j] = Σ dp[i-1][j-k], for k = 1..m (if j-k >= 0)
+
+
+Answer = dp[n][s].
+
+Complexity: O(n * s * m), which is good enough for basic optimal solution.
