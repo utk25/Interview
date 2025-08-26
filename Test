@@ -10,6 +10,10 @@ public class DiceSumWays {
                 //Try all face values the current die can show: 1..m, 
                 // but never more than sum (to avoid negative indices).
                 for (int face = 1; face <= m && face <= sum; face++) {
+                
+                //Add ways from the previous row:
+                //If current die shows face, then the remaining dice-1 dice must make sum - face.
+                //So we add dp[dice-1][sum-face] for each possible face.
                     dp[dice][sum] += dp[dice - 1][sum - face];
                 }
             }
