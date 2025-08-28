@@ -1,1 +1,33 @@
 
+import java.util.*;
+
+public class LISBinarySearch {
+    public static int lengthOfLIS(int[] nums) {
+        // List to store the potential LIS
+        List<Integer> sub = new ArrayList<>();
+
+        for (int num : nums) {
+            // Step 1: Find position using binary search
+            int pos = Collections.binarySearch(sub, num);
+
+            // Step 2: If not found, binarySearch returns (-insertionPoint - 1)
+            if (pos < 0) {
+                pos = -(pos + 1);
+            }
+
+            // Step 3: If pos is equal to size, it means num is greater than all elements in sub
+            if (pos == sub.size()) {
+                sub.add(num);
+            } else {
+                // Otherwise, replace the element at pos
+                sub.set(pos, num);
+            }
+        }
+        return sub.size();
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {10, 9, 2, 5, 3, 7, 101, 18};
+        System.out.println(lengthOfLIS(arr)); // Output: 4
+    }
+}
