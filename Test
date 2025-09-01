@@ -1,22 +1,19 @@
-
-
+class Solution {
     public int maxProfit(int[] prices) {
-        int max[] = new int[prices.length];
-        for (int i = 0; i < max.length; i++) {
-            max[i] = -1;
-        }
-        int m = prices[prices.length - 1];
-        for (int i = prices.length - 2; i >= 0; i--) {
-            if (prices[i + 1] > m) {
-                m = prices[i + 1];
-            }
-            max[i] = m;
-        }
-        m = max[0] - prices[0];
-        for (int i = 1; i < max.length; i++) {
-            if (max[i] - prices[i] > m) {
-                m = max[i] - prices[i];
+        int minPrice = Integer.MAX_VALUE; // lowest price so far
+        int maxProfit = 0;                // best profit so far
+
+        for (int price : prices) {
+            // check if today's price is better for buying
+            if (price < minPrice) {
+                minPrice = price;
+            } 
+            // check if selling today gives better profit
+            else if (price - minPrice > maxProfit) {
+                maxProfit = price - minPrice;
             }
         }
-        return m == -1 || prices.length == 1 ? 0 : m;
+
+        return maxProfit;
     }
+}
