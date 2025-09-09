@@ -1,27 +1,28 @@
-
-import java.util.*;
+import java.util.PriorityQueue;
 
 class Solution {
-    public int numRabbits(int[] answers) {
-        Map<Integer, Integer> freqMap = new HashMap<>();
-        
-        // Count frequency of each answer
-        for (int ans : answers) {
-            freqMap.put(ans, freqMap.getOrDefault(ans, 0) + 1);
+    public int furthestBuilding(int[] heights, int bricks, int ladders) {
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+
+        for (int i = 0; i < heights.length - 1; i++) {
+            int diff = heights[i + 1] - heights[i];
+
+            if (diff > 0) {
+                minHeap.offer(diff);
+
+                // If more climbs than ladders, pay the smallest one with bricks
+                if (minHeap.size() > ladders) {
+                    bricks -= minHeap.poll();
+                }
+
+                // If bricks exhausted, return current building index
+                if (bricks < 0) {
+                    return i;
+                }
+            }
         }
-        
-        int result = 0;
-        for (Map.Entry<Integer, Integer> entry : freqMap.entrySet()) {
-            int x = entry.getKey();    // rabbit's answer
-            int count = entry.getValue(); // how many rabbits gave this answer
-            
-            int groupSize = x + 1;
-            // Number of full groups needed
-            int groups = (int) Math.ceil((double) count / groupSize);
-            
-            result += groups * groupSize;
-        }
-        
-        return result;
+
+        // If we never ran out of bricks, we reached the last building
+        return heights.length - 1;
     }
 }
